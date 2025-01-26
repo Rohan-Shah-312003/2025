@@ -1,4 +1,4 @@
-import { Perceptron } from "./perceptron";
+import { Perceptron } from "./perceptron.js";
 const perceptron = new Perceptron(2);
 
 const trainingData = [

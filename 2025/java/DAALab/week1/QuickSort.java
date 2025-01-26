@@ -1,107 +1,88 @@
-import java.util.Scanner;
-
-/**
- * QuickSort
- */
 public class QuickSort {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int ar[] = new int[n];
 
-        for (int i = 0; i < n; i++) {
-            ar[i] = sc.nextInt();
+    // Function to perform quicksort with a given pivot selection strategy
+    public static void quickSort(int[] arr, int low, int high, String pivotType) {
+        if (low < high) {
+            int pivotIndex = partition(arr, low, high, pivotType);
+            quickSort(arr, low, pivotIndex - 1, pivotType);  // Left subarray
+            quickSort(arr, pivotIndex + 1, high, pivotType); // Right subarray
         }
-
-
     }
 
-    static int partitionHigh(int[] a, int low, int high) {
-        int pivot = a[high];
-        int i = (low - 1);
+    // Function to partition the array around the pivot
+    public static int partition(int[] arr, int low, int high, String pivotType) {
+        int pivot = choosePivot(arr, low, high, pivotType);
+        int i = low - 1;
+        
+        // Move pivot to the end for ease of partitioning
+        if (pivot != high) {
+            swap(arr, pivot, high);
+        }
+
         for (int j = low; j < high; j++) {
-            if (a[j] <= pivot) {
+            if (arr[j] <= arr[high]) {
                 i++;
-                int temp = a[i];
-                a[i] = a[j];
-                a[j] = temp;
+                swap(arr, i, j);
             }
         }
-        int temp = a[i + 1];
-        a[i + 1] = a[high];
-        a[high] = temp;
-
+        
+        // Move pivot to its correct position
+        swap(arr, i + 1, high);
         return i + 1;
     }
 
-    static int partitionLow(int[] a, int low, int high) {
-        int pivot = a[low];
-        int i = (low + 1);
-        for (int j = low + 1; j <= high; j++) {
-            if (a[j] < pivot) {
-                int temp = a[i];
-                a[i] = a[j];
-                a[j] = temp;
-                i++;
-            }
-        }
-        int temp = a[i - 1];
-        a[i - 1] = a[low];
-        a[low] = temp;
-
-        return i - 1;
-    }
-
-    static int partitionMid(int[] a, int low, int high) {
-        int middleIndex = (high + low) / 2;
-        int pivot = a[middleIndex];
-
-        int temp = a[middleIndex];
-        a[middleIndex] = a[high];
-        a[high] = temp;
-
-        int i = low - 1;
-        // upper half
-        for (int j = low; j < high; j++) {
-            if (arr[j] <= pivot) {
-                i++;
-                temp = a[i];
-                a[i] = a[j];
-                a[j] = temp;
-            }
-        }
-
-        temp = a[i + 1];
-        a[i + 1] = a[high];
-        a[high] = temp;
-    }
-
-    static void quickSortHigh(int a[], int l, int h) {
-        if (l < h) {
-            int pi = partitionHigh(a, l, h);
-            quickSortHigh(a, l, pi - 1);
-            quickSortHigh(a, pi - 1, h);
-        }
-    }
-    
-    static void quickSortLow(int a[], int l, int h) {
-        if (l < h) {
-            int pi = partitionLow(a, l, h);
-            quickSortLow(a, l, pi - 1);
-            quickSortLow(a, pi + 1, h);
+    // Function to choose the pivot based on pivot type
+    public static int choosePivot(int[] arr, int low, int high, String pivotType) {
+        switch (pivotType) {
+            case "start":
+                return low; // Pivot is the first element
+            case "middle":
+                return (low + high) / 2; // Pivot is the middle element
+            case "end":
+                return high; // Pivot is the last element
+            default:
+                throw new IllegalArgumentException("Invalid pivot type");
         }
     }
 
-    static void quickSortMid(int a[], int l, int h) {
-        if (l < h) {
-            int pi = partition(a, l, h);
-            quickSort(a, l, pi - 1);
-            quickSort(a, pi - 1, h);
-        }
+    // Function to swap elements in the array
+    public static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
     }
-    static void displayArray(int a[]) {
-        for (int i : a) {
-            System.out.print(i + ", ");
+
+    // Main function to test the three pivot strategies
+    public static void main(String[] args) {
+        // Example array to be sorted
+        int[] arr = {12, 11, 13, 5, 6, 7};
+        
+        System.out.println("Original array:");
+        printArray(arr);
+        
+        // Sort with pivot at start
+        int[] arrStart = arr.clone();
+        quickSort(arrStart, 0, arrStart.length - 1, "start");
+        System.out.println("\nSorted with pivot at start:");
+        printArray(arrStart);
+
+        // Sort with pivot in middle
+        int[] arrMiddle = arr.clone();
+        quickSort(arrMiddle, 0, arrMiddle.length - 1, "middle");
+        System.out.println("\nSorted with pivot in middle:");
+        printArray(arrMiddle);
+
+        // Sort with pivot at end
+        int[] arrEnd = arr.clone();
+        quickSort(arrEnd, 0, arrEnd.length - 1, "end");
+        System.out.println("\nSorted with pivot at end:");
+        printArray(arrEnd);
+    }
+
+    // Helper function to print array
+    public static void printArray(int[] arr) {
+        for (int num : arr) {
+            System.out.print(num + " ");
         }
         System.out.println();
     }
