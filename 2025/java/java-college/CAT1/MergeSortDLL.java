@@ -1,117 +1,77 @@
-
-import java.util.*;
-class Node {
+import java.util.Scanner;
+public class MergeSortDLL{
+    static node head=null;
+    static class node{
     int data;
-    Node next, prev;
-    Node(int data) {
-        this.data = data;
-        this.next = null;
-        this.prev = null;
+    node next;
+    node prev;
+    node(int n){
+        data=n;
+        next=null;
+        prev=null;
+    }
+}
+static void insert(int n){
+    node newnode = new node(n);
+    if(head==null) head=newnode;
+    else{
+        node cur=head;
+        while(cur.next!=null) cur=cur.next;
+        cur.next=newnode;
+        newnode.prev=cur;
+    }
+}
+static node sort(node first){
+    if(first==null||first.next==null) return first;
+    node second=split(first);
+    first=sort(first);
+    second=sort(second);
+    return merge(first,second);
+}
+static node split(node first){
+    node fast=first;
+    node slow=first;
+    while(fast.next!=null&&fast.next.next!=null){
+        fast=fast.next.next;
+        slow=slow.next;
+    }
+    node temp=slow.next;
+    slow.next=null;
+    return temp;
+}
+static node merge(node first,node second){
+    if(first==null) return second;
+    if(second==null) return first;
+    if(first.data<=second.data){
+        first.next=merge(first.next,second);
+        first.next.prev=first;
+        first.prev=null;
+        return first;
+    }
+    else{
+       second.next=merge(first,second.next);
+       second.next.prev=second;
+       second.prev=null;
+       return second;
+    }
+}
+static void display(){
+    node cur=head;
+    while(cur!=null){
+        System.out.print(cur.data+"-->");
+        cur=cur.next;
+    }
+    System.out.print("null");
+}
+    public static void main(String ar[]){
+        Scanner sw = new Scanner(System.in);
+        int n=sw.nextInt();
+        for(int i=0;i<n;i++){
+            insert(sw.nextInt());
+        }
+        head=sort(head);
+        display();
+        
     }
 }
 
-public class MergeSortDLL 
-{
-    private static Node split(Node head)
-    {
-        Node slow = head, fast = head;
-        while (fast.next != null && fast.next.next != null)
-        {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-        Node secondHalf = slow.next;
-        slow.next = null;
-        if (secondHalf != null) 
-        {
-            secondHalf.prev = null;
-        }
-        return secondHalf;
-    }
-
-    private static Node merge(Node first, Node second) 
-    {
-        if (first == null)
- return second;
-        if (second == null) return first;
-        Node dummy = new Node(0);
-        Node current = dummy;
-        while (first != null && second != null) 
-        {
-            if (first.data <= second.data) 
-            {
-                current.next = first;
-                first.prev = current;
-                first = first.next;
-            }
-            else 
-            {
-                current.next = second;
-                second.prev = current;
-                second = second.next;
-            }
-            current = current.next;
-        }
-        if (first != null) 
-        {
-            current.next = first;
-            first.prev = current;
-        } 
-        else if (second != null) 
-        {
-            current.next = second;
-            second.prev = current;
-        }
-        return dummy.next;
-    }
-
-    public static Node mergeSort(Node head) 
-    {
-        if (head == null || head.next == null) 
-            return head;
-        Node secondHalf = split(head); 
-        head = mergeSort(head);       
-        secondHalf = mergeSort(secondHalf); 
-        return merge(head, secondHalf); 
-    }
-
-    private static void printList(Node head)
-    {
-        Node temp = head;
-        while (temp != null) 
-        {
-            System.out.print(temp.data + " ");
-            temp = temp.next;
-        }
-        System.out.println();
-    }
-
- public static void main(String[] args) 
- {
-        Scanner sc = new Scanner(System.in);
-        int size = sc.nextInt();
-        if (size <= 0) 
-        {
-            System.out.println("0");
-        }
-        Node head = null, tail = null;
-        for (int i = 0; i < size; i++) 
-        {
-            int value = sc.nextInt();
-            Node newNode = new Node(value);
-            if (head == null) 
-            {
-                head = newNode;
-                tail = newNode;
-            } 
-else 
-            {
-                tail.next = newNode;
-                newNode.prev = tail;
-                tail = newNode;
-            }
-        }
-        head = mergeSort(head);
-        printList(head);
-    }
-}

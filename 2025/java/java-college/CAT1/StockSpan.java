@@ -1,38 +1,26 @@
-
 import java.util.*;
-public class StockSpan 
-{
-    public static int[] calculateSpan(int[] prices, int n) 
-    {
-        int[] span = new int[n];
-        Stack<Integer> stack = new Stack<>();
-        for (int i = 0; i < n; i++) 
-        {
-            while (!stack.isEmpty() && prices[stack.peek()] <= prices[i]) 
-            {
-                stack.pop();
+public class Test {
+    static void span(int p[],int n,int s[]){
+        Stack<Integer> st = new Stack<>();
+        st.push(0);
+        s[0]=1;
+        for(int i=0;i<n;i++){
+            while(!st.isEmpty()&&p[st.peek()]<=p[i]){
+                st.pop();
             }
-            span[i] = (stack.isEmpty()) ? (i + 1) : (i - stack.peek());
-            stack.push(i);
+            s[i]=(st.isEmpty()?(i+1):(i-st.peek()));
+            st.push(i);
         }
-        return span;
     }
-
-    public static void main(String[] args) 
-    {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int[] prices = new int[n];
-        for (int i = 0; i < n; i++) 
+        public static void main(String[] args)
         {
-            prices[i] = sc.nextInt();
+            Scanner sw= new Scanner(System.in);
+            int n=sw.nextInt();
+                int p[] = new int[n];
+                for(int i=0;i<n;i++) p[i]=sw.nextInt();
+                int s[] = new int[n];
+                span(p, n, s);
+                for(int i=0;i<n;i++)
+                System.out.print(s[i]+" ");
         }
-        int[] spans = calculateSpan(prices, n);
-        for (int span : spans) 
-        {
-            System.out.print(span + " ");
-        }
-        sc.close();
-    }
 }
-
